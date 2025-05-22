@@ -3,7 +3,7 @@ info:
   title: MDM API Integration
   version: 1.0.0
   description: |
-    Login → MFA → Token → Cihazları al → Serial ile eşleşen cihazı bul → Device ID ile adını güncelle
+    Device ID ile cihaz adını güncellemeye yarar
 
 servers:
   - url: https://mdm.aa.com.tr:8383
