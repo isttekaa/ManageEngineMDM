@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: MDM API Integration
+  version: 1.0.0
+  description: |
+    Login → MFA → Token → Cihazları al → Serial ile eşleşen cihazı bul → Device ID ile adını güncelle
+
+servers:
+  - url: https://mdm.aa.com.tr:8383
+
+paths:
+  /auth/login:
+    post:
+      summary: Login to get UID
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                auth_type:
+                  type: string
+                domainName:
+                  type: string
+              required: [username, password, auth_type, domainName]
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uniq_user_id:
+                    type: string
+
+  /auth/mfa/verify:
+    post:
+      summary: MFA Verification
+      operationId: verifyMfa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uid:
+                  type: string
+                otp:
+                  type: string
+                rememberme_enabled:
+                  type: string
+              required: [uid, otp, rememberme_enabled]
+      responses:
+        '200':
+          description: Token received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth_token:
+                    type: string
+
+  /api/v1/mdm/devices:
+    get:
+      summary: Get all devices
+      operationId: getDevices
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        device_id:
+                          type: string
+                        serial_number:
+                          type: string
+                        device_name:
+                          type: string
+
+  /api/v1/mdm/devices/{device_id}:
+    put:
+      summary: Update device by ID
+      operationId: updateDevice
+      parameters:
+        - in: path
+          name: device_id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_name:
+                  type: string
+      responses:
+        '200':
+          description: Device updated
