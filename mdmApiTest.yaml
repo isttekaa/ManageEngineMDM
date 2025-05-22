@@ -6,7 +6,7 @@ info:
     Device ID ile cihaz adını güncellemeye yarar
 
 servers:
-  - url: https://mdm.aa.com.tr:8383
+  - url: https://mdm.com.tr
 
 paths:
   /auth/login:
